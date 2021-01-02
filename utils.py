@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 import os
 import math
 import matplotlib.pyplot as plt
@@ -106,7 +107,14 @@ def getAveragePaceInfo(directoryname, link_list, distance):
         site = requests.get(link)
         site.encoding = site.apparent_encoding
         data = BeautifulSoup(site.text, 'html.parser')
-        label = getPtag(data.find(class_='smalltxt'))[1].split(u'\xa0')[0]
+        horse_field = getPtag(data.find(class_='racedata fc'))[
+            1].split(u'\xa0')[4][4:]
+        detail = getPtag(data.find(class_='smalltxt'))[1].split(
+            u'\xa0')[0]
+        split_detail = detail.split(' ')
+        time = re.split('[年月日]', split_detail[0])
+        label = time[0] + '/' + time[1].zfill(2) + '/' + time[2].zfill(
+            2) + ' ' + split_detail[1] + ' ' + split_detail[2] + '(' + horse_field + ')'
         lap = getLap(link)
         race_info = {'label': label,
                      'lap': lap, 'distance': distance}
