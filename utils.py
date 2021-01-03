@@ -107,8 +107,12 @@ def getAveragePaceInfo(directoryname, link_list, distance):
         site = requests.get(link)
         site.encoding = site.apparent_encoding
         data = BeautifulSoup(site.text, 'html.parser')
-        horse_field = getPtag(data.find(class_='racedata fc'))[
-            1].split(u'\xa0')[4][4:]
+        ptag = getPtag(data.find(class_='racedata fc'))[
+            1].split(u'\xa0')
+        if len(ptag) < 4:
+            print('不正なURLです。' + link)
+            continue
+        horse_field = ptag[4][4:]
         detail = getPtag(data.find(class_='smalltxt'))[1].split(
             u'\xa0')[0]
         split_detail = detail.split(' ')
