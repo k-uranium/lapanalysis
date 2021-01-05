@@ -51,6 +51,9 @@ def getPtag(row_element):
     return getContent(str(row_element), '>', '</p>', 0)
 
 
+def getH1(row_element):
+    return getContent(str(row_element), '<h1>', '<', 0)
+
 def getLap(link):
     site = requests.get(link)
     site.encoding = site.apparent_encoding
@@ -90,6 +93,7 @@ def writeGraph(directoryname, distance, race_info_list, filename):
                     loc='lower left', prop={'family': fontname, 'size': 8})
     figure.savefig(os.path.join(directoryname, filename),
                    bbox_extra_artists=(lg,), bbox_inches='tight')
+    plt.close(figure)
 
 
 def getAveragePaceInfo(directoryname, link_list, distance):
@@ -112,13 +116,13 @@ def getAveragePaceInfo(directoryname, link_list, distance):
         if len(ptag) < 4:
             print('不正なURLです。' + link)
             continue
-        horse_field = ptag[4][4:]
+        horse_field = ptag[4][ptag[4].find(':')+2:]
         detail = getPtag(data.find(class_='smalltxt'))[1].split(
             u'\xa0')[0]
         split_detail = detail.split(' ')
         time = re.split('[年月日]', split_detail[0])
         label = time[0] + '/' + time[1].zfill(2) + '/' + time[2].zfill(
-            2) + ' ' + split_detail[1] + ' ' + split_detail[2] + '(' + horse_field + ')'
+            2) + ' ' + split_detail[1] + ' ' + getH1(ptag[0])[1] + '(' + horse_field + ')'
         lap = getLap(link)
         race_info = {'label': label,
                      'lap': lap, 'distance': distance}
