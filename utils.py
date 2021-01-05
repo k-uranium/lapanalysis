@@ -84,8 +84,9 @@ def writeGraph(directoryname, distance, race_info_list, filename):
         if race_info['distance'] % 200 == 0:
             x = [i + 1 for i in range(int(race_info['distance'] / 200))]
         else:
-            x = [race_info['distance'] / 200 +
+            x = [race_info['distance'] % 200 / 200  +
                  i for i in range(int(race_info['distance'] / 200) + 1)]
+            race_info['lap'][0] *= 200 / (race_info['distance'] % 200)
         plt.plot(x, race_info['lap'], label=race_info['label'])
         if count == 10:
             break
