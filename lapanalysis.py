@@ -21,7 +21,7 @@ split_detail = re.split('[年月日]', detail)
 directoryname = './' + split_detail[0] + split_detail[1].zfill(2) + split_detail[2].zfill(
     2) + split_detail[3].replace(' ', '') + getRaceName(race_data.find(class_='RaceName'))[1]
 os.makedirs(directoryname, exist_ok=True)
-with open(os.path.join(directoryname, 'raceanalysis'), 'w') as f:
+with open(os.path.join(directoryname, 'raceanalysis.txt'), 'w') as f:
     f.write(link + '\n')
     f.write('\n'.join(link_list))
 race_data01_class = str(race_data.find_all(class_='RaceData01'))
