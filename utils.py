@@ -174,7 +174,7 @@ def analysis(directoryname, average_pace_info, course, horse_name, link):
                 tmp_track = getAtag(row_element[1])[1]
                 if tmp_track[0] < '0' or tmp_track[0] > '9':
                     break
-                track = re.sub('/d+', '', tmp_track)
+                track = re.sub('\d+', '', tmp_track)
             # レース名取得
             if count == 4:
                 race_info['lap'] = getLap(
@@ -202,7 +202,7 @@ def analysis(directoryname, average_pace_info, course, horse_name, link):
         if count == 28:
             race_info['label'] = day + ' ' + race_name + \
                 '(' + jockey + ',' + horse_field + ')' + \
-                ' ' + rank + '着' + track + str(race_info['distance'])
+                ' ' + rank + '着 ' + track + str(race_info['distance']) + 'm'
             if rank == '1' or rank == '2':
                 race_info_list[0].append(race_info)
             elif rank == '3' or rank == '4' or rank == '5':
