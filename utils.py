@@ -169,13 +169,14 @@ def analysis(directoryname, average_pace_info, course, horse_name, link):
             # 開催日取得
             if count == 0:
                 day = getAtag(row_element[1])[1]
-            # 競馬場チェック
+            # 競馬場取得
             if count == 1:
                 tmp_track = getAtag(row_element[1])[1]
+                # 中央開催かどうかチェック
                 if tmp_track[0] < '0' or tmp_track[0] > '9':
                     break
                 track = re.sub('\d+', '', tmp_track)
-            # レース名取得
+            # レース名とラップ取得
             if count == 4:
                 race_info['lap'] = getLap(
                     'https://db.netkeiba.com' + getLink(row_element[1])[1])
