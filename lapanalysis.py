@@ -27,8 +27,8 @@ with open(os.path.join(directoryName, textFileName), 'w') as f:
     f.write('\n'.join(link_list))
 race_data01_class = str(race_data.find_all(class_='RaceData01'))
 m_position = race_data01_class.find('m')
-distance = int(race_data01_class[m_position-4:m_position])
-course = race_data01_class[m_position-5]
+distance = int(race_data01_class[m_position - 4:m_position])
+course = race_data01_class[m_position - 5]
 horse_tag_list = race_data.find_all(class_='HorseName')
 link = link.replace('shutuba', 'data_top')
 average_pace_info = getAveragePaceInfo(directoryName, link_list, distance)
