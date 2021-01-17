@@ -64,7 +64,7 @@ def getLap(link):
     return list(map(float, lap_str.split(' - ')))
 
 
-def writeGraph(directoryname, distance, race_info_list, filename):
+def writeGraph(directoryName, distance, race_info_list, filename):
     fontname = 'MS Gothic'
     figure = plt.figure()
     xmax = math.ceil(distance / 200) + 2
@@ -92,12 +92,12 @@ def writeGraph(directoryname, distance, race_info_list, filename):
             break
     lg = plt.legend(bbox_to_anchor=(1.01, 0.5, 0.5, .100),
                     loc='lower left', prop={'family': fontname, 'size': 8})
-    figure.savefig(os.path.join(directoryname, filename),
+    figure.savefig(os.path.join(directoryName, filename),
                    bbox_extra_artists=(lg,), bbox_inches='tight')
     plt.close(figure)
 
 
-def getAveragePaceInfo(directoryname, link_list, distance):
+def getAveragePaceInfo(directoryName, link_list, distance):
     average_lap = [0 for i in range(int(distance / 200))]
     race_info_list = []
     if distance % 200 != 0:
@@ -136,14 +136,14 @@ def getAveragePaceInfo(directoryname, link_list, distance):
     average_pace_info = {'label': '平均ペース',
                          'lap': average_lap, 'distance': distance}
     race_info_list.insert(0, average_pace_info)
-    savedirectorypath = os.path.join(directoryname, '過去レース')
-    os.makedirs(savedirectorypath, exist_ok=True)
+    saveDirectoryPath = os.path.join(directoryName, '過去レース')
+    os.makedirs(saveDirectoryPath, exist_ok=True)
     filename = '過去レース.png'
-    writeGraph(savedirectorypath, distance, race_info_list, filename)
+    writeGraph(saveDirectoryPath, distance, race_info_list, filename)
     return average_pace_info
 
 
-def analysis(directoryname, average_pace_info, course, horse_name, link):
+def analysis(directoryName, average_pace_info, course, horse_name, link):
     print(horse_name, link)
     site = requests.get(link)
     site.encoding = site.apparent_encoding
@@ -214,7 +214,7 @@ def analysis(directoryname, average_pace_info, course, horse_name, link):
                 '掲示板.png', horse_name + '凡走.png']
     for i in range(3):
         if race_info_list[i]:
-            savedirectorypath = os.path.join(directoryname, horse_name)
-            os.makedirs(savedirectorypath, exist_ok=True)
-            writeGraph(savedirectorypath, average_pace_info['distance'],
+            saveDirectoryPath = os.path.join(directoryName, horse_name)
+            os.makedirs(saveDirectoryPath, exist_ok=True)
+            writeGraph(saveDirectoryPath, average_pace_info['distance'],
                        race_info_list[i], filename[i])

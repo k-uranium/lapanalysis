@@ -4,7 +4,7 @@ import os
 import re
 from utils import getRaceDetail, getRaceName, getAveragePaceInfo, getTitle, getLink, analysis
 
-textFileName = 'raceanalysis.txt'
+textFileName = 'レース分析.txt'
 with open('./' + textFileName, 'r') as f:
     link_list = f.read().splitlines()
 link = link_list.pop(0)
@@ -19,10 +19,10 @@ site.encoding = site.apparent_encoding
 race_data = BeautifulSoup(site.text, 'html.parser')
 detail = getRaceDetail(race_data.find('title'))[1]
 split_detail = re.split('[年月日]', detail)
-directoryname = './' + split_detail[0] + split_detail[1].zfill(2) + split_detail[2].zfill(
+directoryName = './' + split_detail[0] + split_detail[1].zfill(2) + split_detail[2].zfill(
     2) + split_detail[3].replace(' ', '') + getRaceName(race_data.find(class_='RaceName'))[1]
-os.makedirs(directoryname, exist_ok=True)
-with open(os.path.join(directoryname, textFileName), 'w') as f:
+os.makedirs(directoryName, exist_ok=True)
+with open(os.path.join(directoryName, textFileName), 'w') as f:
     f.write(link + '\n')
     f.write('\n'.join(link_list))
 race_data01_class = str(race_data.find_all(class_='RaceData01'))
@@ -31,10 +31,10 @@ distance = int(race_data01_class[m_position-4:m_position])
 course = race_data01_class[m_position-5]
 horse_tag_list = race_data.find_all(class_='HorseName')
 link = link.replace('shutuba', 'data_top')
-average_pace_info = getAveragePaceInfo(directoryname, link_list, distance)
+average_pace_info = getAveragePaceInfo(directoryName, link_list, distance)
 for horse_tag in horse_tag_list:
     link = getLink(horse_tag)
     horse_name = getTitle(horse_tag)
     if link[0] and horse_name[0]:
-        analysis(directoryname, average_pace_info,
+        analysis(directoryName, average_pace_info,
                  course, horse_name[1], link[1])
