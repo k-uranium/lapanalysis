@@ -97,7 +97,7 @@ def writeGraph(directoryName, distance, race_info_list, filename):
     plt.close(figure)
 
 
-def getAveragePaceInfo(directoryName, link_list, distance):
+def getAveragePaceInfo(directoryName, link_list, distance, saveDirectoryName='過去レース'):
     average_lap = [0 for i in range(int(distance / 200))]
     race_info_list = []
     if distance % 200 != 0:
@@ -136,7 +136,7 @@ def getAveragePaceInfo(directoryName, link_list, distance):
     average_pace_info = {'label': '平均ペース',
                          'lap': average_lap, 'distance': distance}
     race_info_list.insert(0, average_pace_info)
-    saveDirectoryPath = os.path.join(directoryName, '過去レース')
+    saveDirectoryPath = os.path.join(directoryName, saveDirectoryName)
     os.makedirs(saveDirectoryPath, exist_ok=True)
     filename = '過去レース.png'
     writeGraph(saveDirectoryPath, distance, race_info_list, filename)

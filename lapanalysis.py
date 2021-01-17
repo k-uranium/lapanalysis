@@ -5,7 +5,7 @@ import re
 from utils import getRaceDetail, getRaceName, getAveragePaceInfo, getTitle, getLink, analysis
 
 textFileName = 'レース分析.txt'
-with open('./' + textFileName, 'r') as f:
+with open('./' + textFileName, 'r', encoding='utf-8') as f:
     link_list = f.read().splitlines()
 link = link_list.pop(0)
 if 'https://race.netkeiba.com/race/shutuba.html?race_id=' not in link:
@@ -19,7 +19,7 @@ site.encoding = site.apparent_encoding
 race_data = BeautifulSoup(site.text, 'html.parser')
 detail = getRaceDetail(race_data.find('title'))[1]
 split_detail = re.split('[年月日]', detail)
-directoryName = './' + split_detail[0] + split_detail[1].zfill(2) + split_detail[2].zfill(
+directoryName = './レース分析/' + split_detail[0] + split_detail[1].zfill(2) + split_detail[2].zfill(
     2) + split_detail[3].replace(' ', '') + getRaceName(race_data.find(class_='RaceName'))[1]
 os.makedirs(directoryName, exist_ok=True)
 with open(os.path.join(directoryName, textFileName), 'w') as f:
