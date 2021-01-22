@@ -179,9 +179,11 @@ def analysis(directoryName, average_pace_info, course, horse_name, link):
                 track = re.sub('\d+', '', tmp_track)
             # レース名とラップ取得
             if count == 4:
+                race_name = getTitle(row_element[1])[1]
+                if '障害' in race_name:
+                    break
                 race_info['lap'] = getLap(
                     'https://db.netkeiba.com' + getLink(row_element[1])[1])
-                race_name = getTitle(row_element[1])[1]
             # 着順を取得
             if count == 11:
                 rank = row_element[1]
