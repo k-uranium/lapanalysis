@@ -6,7 +6,7 @@ import math
 import matplotlib.pyplot as plt
 
 
-def getContent(string, left_str, right_str, index):
+def getContent(string, left_str, right_str, index=0):
     canFind = True
     start_index = string.find(left_str, index) + len(left_str)
     end_index = string.find(right_str, start_index)
@@ -16,23 +16,23 @@ def getContent(string, left_str, right_str, index):
 
 
 def getLink(span):
-    return getContent(str(span), 'href="', '"', 0)
+    return getContent(str(span), 'href="', '"')
 
 
 def getRaceName(div):
-    return getContent(str(div), '>', '\n', 0)
+    return getContent(str(div), '>', '\n')
 
 
 def getRaceDetail(title):
-    return getContent(str(title), '| ', ' レース情報', 0)
+    return getContent(str(title), '| ', ' レース情報')
 
 
 def getTitle(span):
-    return getContent(str(span), 'title="', '"', 0)
+    return getContent(str(span), 'title="', '"')
 
 
 def getTable(table):
-    return getContent(str(table), '>', '</tbody>', 0)
+    return getContent(str(table), '>', '</tbody>')
 
 
 def getTableRow(table, index):
@@ -44,15 +44,15 @@ def getRowElement(table, index):
 
 
 def getAtag(row_element):
-    return getContent(str(row_element), '>', '</a>', 0)
+    return getContent(str(row_element), '>', '</a>')
 
 
 def getPtag(row_element):
-    return getContent(str(row_element), '>', '</p>', 0)
+    return getContent(str(row_element), '>', '</p>')
 
 
 def getH1(row_element):
-    return getContent(str(row_element), '<h1>', '<', 0)
+    return getContent(str(row_element), '<h1>', '<')
 
 
 def getLap(link):
