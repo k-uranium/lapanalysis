@@ -55,6 +55,10 @@ def getH1(row_element):
     return getContent(str(row_element), '<h1>', '<')
 
 
+def getSpan(table):
+    return getContent(str(table), '<span>', '<')
+
+
 def getLap(link):
     site = requests.get(link)
     site.encoding = site.apparent_encoding
