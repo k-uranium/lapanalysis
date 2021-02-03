@@ -3,15 +3,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 import sys
-from utils import getLink, getRowElement, getSpan, getTable, getTableRow, getTitle
-
-
-def getFather(link):
-    site = requests.get(link)
-    site.encoding = site.apparent_encoding
-    horse_data = BeautifulSoup(site.text, 'html.parser')
-    father = getTitle(horse_data.find(class_='blood_table'))[1]
-    return father
+from utils import getLink, getRowElement, getSpan, getTable, getTableRow, getTitle, getTimeDictionaryList, getFrameDictionaryList, getFatherDictionaryList, getFather, getLevel
 
 
 # リストの父名の位置を返す
@@ -49,22 +41,6 @@ def findRaceId(raceId_list, raceId):
     return left
 
 
-def getLevel(smalltxt):
-    text = str(smalltxt)
-    if '新馬' in text:
-        return 0
-    elif '未勝利' in text:
-        return 1
-    elif '1勝クラス' in text or '500万下' in text:
-        return 2
-    elif '2勝クラス' in text or '1000万下' in text:
-        return 3
-    elif '3勝クラス' in text or '1600万下' in text:
-        return 4
-    else:
-        return 5
-
-
 def getResult(raceId, track):
     link = 'https://db.netkeiba.com/race/' + raceId
     site = requests.get(link)
@@ -93,30 +69,15 @@ def getResult(raceId, track):
     father_dictionary_list = []
     time_dictionary_list = []
     if os.path.exists(frameDataFilePath):
-        with open(frameDataFilePath, 'r', encoding='utf-8') as f:
-            data_list = f.read().splitlines()
-            for datas in data_list:
-                data = datas.split(' ')
-                data_dictionary = {'frame': int(data[0]), '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
-                frame_dictionary_list.append(data_dictionary)
+        frame_dictionary_list = getFrameDictionaryList(frameDataFilePath)
     else:
         for num in range(8):
             data_dictionary = {'frame': num + 1, '1': 0, '2': 0, '3': 0, 'otherwise': 0}
             frame_dictionary_list.append(data_dictionary)
     if os.path.exists(fatherDataFilePath):
-        with open(fatherDataFilePath, 'r', encoding='utf-8') as f:
-            data_list = f.read().splitlines()
-            for datas in data_list:
-                data = datas.split('  ')
-                data_dictionary = {'father': data[0], '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
-                father_dictionary_list.append(data_dictionary)
+        father_dictionary_list = getFatherDictionaryList(fatherDataFilePath)
     if os.path.exists(timeDataFilePath):
-        with open(timeDataFilePath, 'r', encoding='utf-8') as f:
-            data_list = f.read().splitlines()
-            for datas in data_list:
-                data = datas.split(' ')
-                data_dictionary = {'level': data[0], 'count': int(data[1]), 'avetime': float(data[2])}
-                time_dictionary_list.append(data_dictionary)
+        time_dictionary_list = getTimeDictionaryList(timeDataFilePath)
     else:
         for level in level_list:
             data_dictionary = {'level': level, 'count': 0, 'avetime': 0.0}

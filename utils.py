@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import os
 import math
+import csv
 import matplotlib.pyplot as plt
 
 
@@ -67,6 +68,148 @@ def getLap(link):
     lap_str = getRowElement(lap, 0)[1]
     # 取得したラップの文字列を分割し、数値に変換したリストの作成
     return list(map(float, lap_str.split(' - ')))
+
+
+def getFather(link):
+    site = requests.get(link)
+    site.encoding = site.apparent_encoding
+    horse_data = BeautifulSoup(site.text, 'html.parser')
+    father = getTitle(horse_data.find(class_='blood_table'))[1]
+    return father
+
+
+def getLevel(smalltxt):
+    text = str(smalltxt)
+    if '新馬' in text:
+        return 0
+    elif '未勝利' in text:
+        return 1
+    elif '1勝クラス' in text or '500万下' in text:
+        return 2
+    elif '2勝クラス' in text or '1000万下' in text:
+        return 3
+    elif '3勝クラス' in text or '1600万下' in text:
+        return 4
+    else:
+        return 5
+
+
+def makeCsv(dir_path):
+    if not os.path.exists(dir_path):
+        print('そのようなフォルダは存在しません。(' + os.path.join(os.getcwd(), dir_path) + ')')
+        exit()
+    with open(os.path.join(dir_path, '平均タイム.txt'), 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    with open(os.path.join(dir_path, '平均タイム.csv'), 'w', newline='', encoding='cp932') as f:
+        writer = csv.writer(f)
+        writer.writerow(['レースレベル', '平均タイム'])
+        for datas in data_list:
+            data = datas.split(' ')
+            time_float = float(data[2])
+            time = str(int(int(time_float) / 60)) + ':' + str(int(time_float) % 60).zfill(2) + '.' + str(time_float - int(time_float)).split('.')[1]
+            writer.writerow([data[0], time])
+    with open(os.path.join(dir_path, '枠別成績.txt'), 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    with open(os.path.join(dir_path, '枠別成績.csv'), 'w', newline='', encoding='cp932') as f:
+        writer = csv.writer(f)
+        writer.writerow(['枠', '1着', '2着', '3着', '着外', '単勝率', '連対率', '複勝率'])
+        for datas in data_list:
+            data = datas.split(' ')
+            r1 = int(data[1])
+            r2 = int(data[2])
+            r3 = int(data[3])
+            r4 = int(data[4])
+            total = r1 + r2 + r3 + r4
+            win_rate = r1 / total * 100
+            quinella_rate = (r1 + r2) / total * 100
+            place_rate = (total - r4) / total * 100
+            writer.writerow([data[0] + '枠', r1, r2, r3, r4, win_rate, quinella_rate, place_rate])
+    with open(os.path.join(dir_path, '種牡馬別成績.txt'), 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    with open(os.path.join(dir_path, '種牡馬別成績.csv'), 'w', newline='', encoding='cp932') as f:
+        writer = csv.writer(f)
+        writer.writerow(['種牡馬', '1着', '2着', '3着', '着外', '単勝率', '連対率', '複勝率'])
+        father_grades_list_list = []
+        for datas in data_list:
+            data = datas.split('  ')
+            r1 = int(data[1])
+            r2 = int(data[2])
+            r3 = int(data[3])
+            r4 = int(data[4])
+            total = r1 + r2 + r3 + r4
+            win_rate = r1 / total * 100
+            quinella_rate = (r1 + r2) / total * 100
+            place_rate = (total - r4) / total * 100
+            father_grades_list = [data[0], r1, r2, r3, r4, win_rate, quinella_rate, place_rate]
+            insertFatherGradesList(father_grades_list_list, father_grades_list)
+        father_grades_list_list.reverse()
+        writer.writerows(father_grades_list_list)
+
+
+def getTimeDictionaryList(path):
+    time_dictionary_list = []
+    with open(path, 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    for datas in data_list:
+        data = datas.split(' ')
+        data_dictionary = {'level': data[0], 'count': int(data[1]), 'avetime': float(data[2])}
+        time_dictionary_list.append(data_dictionary)
+    return time_dictionary_list
+
+
+def getFrameDictionaryList(path):
+    frame_dictionary_list = []
+    with open(path, 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    for datas in data_list:
+        data = datas.split(' ')
+        data_dictionary = {'frame': int(data[0]), '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
+        frame_dictionary_list.append(data_dictionary)
+    return frame_dictionary_list
+
+
+def getFatherDictionaryList(path):
+    father_dictionary_list = []
+    with open(path, 'r', encoding='utf-8') as f:
+        data_list = f.read().splitlines()
+    for datas in data_list:
+        data = datas.split('  ')
+        data_dictionary = {'father': data[0], '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
+        father_dictionary_list.append(data_dictionary)
+    return father_dictionary_list
+
+
+def insertFatherGradesList(father_grades_list_list, father_grades_list):
+    left = 0
+    right = len(father_grades_list_list)
+    while(left < right):
+        middle = int((left + right) / 2)
+        if father_grades_list_list[middle][7] < father_grades_list[7]:
+            left = middle + 1
+        elif father_grades_list_list[middle][7] > father_grades_list[7]:
+            right = middle
+        else:
+            if father_grades_list_list[middle][6] > father_grades_list[6]:
+                right = middle
+            elif father_grades_list_list[middle][6] < father_grades_list[6]:
+                left = middle + 1
+            else:
+                if father_grades_list_list[middle][5] > father_grades_list[5]:
+                    right = middle
+                elif father_grades_list_list[middle][5] < father_grades_list[5]:
+                    left = middle + 1
+                else:
+                    if father_grades_list_list[middle][0] < father_grades_list[0]:
+                        right = middle
+                    else:
+                        left = middle + 1
+    father_grades_list_list.insert(left, father_grades_list)
+
+
+def getDirecoryList(path):
+    files = os.listdir(path)
+    files_dir = [f for f in files if os.path.isdir(os.path.join(path, f))]
+    return files_dir
 
 
 def writeGraph(directoryName, distance, race_info_list, filename):
