@@ -333,7 +333,7 @@ def getConditionK(base_time, time, time_diff, distance_k):
 def getFrontK(pace_k, distance, course):
     distance_list = [1000, 1150, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2800, 3000, 3200, 3400, 3600]
     turf_k_list = [10.0, None, 7.0, None, 4.0, 2.0, 0.0, -2.0, -4.0, None, -6.0, None, -8.0, -9.0, -10.0, -10.5, -11.0, -11.5, -12.0, -12.25, -12.5, -12.75]
-    dart_k_list = [13.0, 12.0, 11.0, 10.0, 9.0, None, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, None, 0.0, -1.0, None, None, None, None, None, None, None]
+    dart_k_list = [13.0, 12.0, 11.0, 10.0, 9.0, None, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, None, 0.0, -1.0, -2.0, None, None, None, None, None, None]
     index = distance_list.index(distance)
     if course == '芝':
         ave_pace_k = turf_k_list[index]
