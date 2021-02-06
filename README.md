@@ -1,4 +1,5 @@
 # lapanalysis.py
+前提:makecsv.pyでcsvを作っている。
 レース分析.txtにラップ分析したいレースのnetkeibaの出馬表のURLを一番上に貼る。(https://race.netkeiba.com/race/shutuba.html?race_id={race_id})
 そこから下は平均を出すために使うレースのnetkeibaのレース結果のURLを貼る。(https://db.netkeiba.com/race/{race_id})
 レース分析.txtが準備できたら以下コマンドで実行する。
@@ -34,4 +35,10 @@ python makecsv.py
 その場合のコマンドは以下。
 ```
 python makecsv.py {競馬場} {距離} {コース} {馬場}
+```
+
+# pip install
+使用する前に必ず以下コマンドを実行すること。
+```
+pip install pandas, matplotlib, requests, bs4
 ```
