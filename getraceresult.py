@@ -159,4 +159,4 @@ os.makedirs('./競馬場データ', exist_ok=True)
 track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
 for track in track_list:
     os.makedirs('./競馬場データ/' + track, exist_ok=True)
-getStart(sys.argv[1], track_list[int(sys.argv[1][4:6])])
+getStart(sys.argv[1], track_list[int(sys.argv[1][4:6]) - 1])
