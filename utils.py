@@ -125,7 +125,8 @@ def makeCsv(dir_path):
         for datas in data_list:
             data = datas.split(' ')
             time_float = float(data[2])
-            time = str(int(int(time_float) / 60)) + ':' + str(int(time_float) % 60).zfill(2) + '.' + str(time_float - int(time_float)).split('.')[1]
+            time = str(int(int(time_float) / 60)) + ':' + str(int(time_float) %
+                                                              60).zfill(2) + '.' + str(time_float - int(time_float)).split('.')[1]
             writer.writerow([data[0], time])
     with open(os.path.join(dir_path, '枠別成績.txt'), 'r', encoding='utf-8') as f:
         data_list = f.read().splitlines()
@@ -142,7 +143,8 @@ def makeCsv(dir_path):
             win_rate = r1 / total * 100
             quinella_rate = (r1 + r2) / total * 100
             place_rate = (total - r4) / total * 100
-            writer.writerow([data[0] + '枠', r1, r2, r3, r4, win_rate, quinella_rate, place_rate])
+            writer.writerow([data[0] + '枠', r1, r2, r3, r4,
+                             win_rate, quinella_rate, place_rate])
     with open(os.path.join(dir_path, '種牡馬別成績.txt'), 'r', encoding='utf-8') as f:
         data_list = f.read().splitlines()
     with open(os.path.join(dir_path, '種牡馬別成績.csv'), 'w', newline='', encoding='cp932') as f:
@@ -159,7 +161,8 @@ def makeCsv(dir_path):
             win_rate = r1 / total * 100
             quinella_rate = (r1 + r2) / total * 100
             place_rate = (total - r4) / total * 100
-            father_grades_list = [data[0], r1, r2, r3, r4, win_rate, quinella_rate, place_rate]
+            father_grades_list = [data[0], r1, r2, r3,
+                                  r4, win_rate, quinella_rate, place_rate]
             insertFatherGradesList(father_grades_list_list, father_grades_list)
         father_grades_list_list.reverse()
         writer.writerows(father_grades_list_list)
@@ -171,7 +174,8 @@ def getTimeDictionaryList(path):
         data_list = f.read().splitlines()
     for datas in data_list:
         data = datas.split(' ')
-        data_dictionary = {'level': data[0], 'count': int(data[1]), 'avetime': float(data[2])}
+        data_dictionary = {'level': data[0], 'count': int(
+            data[1]), 'avetime': float(data[2])}
         time_dictionary_list.append(data_dictionary)
     return time_dictionary_list
 
@@ -182,7 +186,8 @@ def getFrameDictionaryList(path):
         data_list = f.read().splitlines()
     for datas in data_list:
         data = datas.split(' ')
-        data_dictionary = {'frame': int(data[0]), '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
+        data_dictionary = {'frame': int(data[0]), '1': int(data[1]), '2': int(
+            data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
         frame_dictionary_list.append(data_dictionary)
     return frame_dictionary_list
 
@@ -193,7 +198,8 @@ def getFatherDictionaryList(path):
         data_list = f.read().splitlines()
     for datas in data_list:
         data = datas.split('  ')
-        data_dictionary = {'father': data[0], '1': int(data[1]), '2': int(data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
+        data_dictionary = {'father': data[0], '1': int(data[1]), '2': int(
+            data[2]), '3': int(data[3]), 'otherwise': int(data[4])}
         father_dictionary_list.append(data_dictionary)
     return father_dictionary_list
 
@@ -310,8 +316,15 @@ def getAveragePaceInfo(directoryName, link_list, distance, saveDirectoryName='�
     return average_pace_info
 
 
+def getAverageTime(dir_path, level):
+    time_dictionary_list = getTimeDictionaryList(
+        os.path.join(dir_path, '平均タイム.txt'))
+    return time_dictionary_list[level]['avetime']
+
+
 def getBaseTime(dir_path, level):
-    time_dictionary_list = getTimeDictionaryList(os.path.join(dir_path, '平均タイム.txt'))
+    time_dictionary_list = getTimeDictionaryList(
+        os.path.join(dir_path, '平均タイム.txt'))
     condition_base_time = time_dictionary_list[level]['avetime']
     if time_dictionary_list[2]['count'] != 0:
         return time_dictionary_list[2]['avetime'], condition_base_time
@@ -331,9 +344,12 @@ def getConditionK(base_time, time, time_diff, distance_k):
 
 
 def getFrontK(pace_k, distance, course):
-    distance_list = [1000, 1150, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2800, 3000, 3200, 3400, 3600]
-    turf_k_list = [10.0, None, 7.0, None, 4.0, 2.0, 0.0, -2.0, -4.0, None, -6.0, None, -8.0, -9.0, -10.0, -10.5, -11.0, -11.5, -12.0, -12.25, -12.5, -12.75]
-    dart_k_list = [13.0, 12.0, 11.0, 10.0, 9.0, None, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, None, 0.0, -1.0, -2.0, None, None, None, None, None, None]
+    distance_list = [1000, 1150, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
+                     2000, 2100, 2200, 2300, 2400, 2500, 2600, 2800, 3000, 3200, 3400, 3600]
+    turf_k_list = [10.0, None, 7.0, None, 4.0, 2.0, 0.0, -2.0, -4.0, None, -6.0,
+                   None, -8.0, -9.0, -10.0, -10.5, -11.0, -11.5, -12.0, -12.25, -12.5, -12.75]
+    dart_k_list = [13.0, 12.0, 11.0, 10.0, 9.0, None, 6.0, 5.0, 4.0, 3.0,
+                   2.0, 1.0, None, 0.0, -1.0, -2.0, None, None, None, None, None, None]
     index = distance_list.index(distance)
     if course == '芝':
         ave_pace_k = turf_k_list[index]
@@ -343,10 +359,13 @@ def getFrontK(pace_k, distance, course):
 
 
 def getSpeedK(weight, time, time_diff, spart, distance, dir_path, course, level):
-    base_time, condition_base_time = getBaseTime(os.path.join(dir_path, '良'), level)
+    base_time, condition_base_time = getBaseTime(
+        os.path.join(dir_path, '良'), level)
     distance_k = 1 / base_time * 100
-    condition_k = getConditionK(condition_base_time, time, time_diff, distance_k)
-    speed_k = (base_time - time) * distance_k * 10 + condition_k + (weight - 55) * 2 + 100
+    condition_k = getConditionK(
+        condition_base_time, time, time_diff, distance_k)
+    speed_k = (base_time - time) * distance_k * 10 + \
+        condition_k + (weight - 55) * 2 + 100
     if course == '芝':
         base_spart = 33.5
     else:
@@ -404,8 +423,53 @@ def getFatherK(father, dir_path):
     return father_k
 
 
-def analysis(directoryName, average_pace_info, course, horse_name, link, main_track, num):
-    print(num, horse_name, link)
+def getK(horse_weight, time, time_diff, main_distance, race_distance, spart, weight, rank, race_pace, main_level, race_level, num, frame, dir_path):
+    num_k = 1 - abs(num - frame) * 0.05 - int((num - frame) / 3) * 0.05
+    base_time = getBaseTime(os.path.join(dir_path, '良'), race_level)[0]
+    distance_k = 1 / base_time * 100
+    race_level_rate = 0.7 + race_level * 0.1
+    main_level_rate = 0.7 + main_level * 0.1
+    level_rate = race_level_rate - main_level_rate + 1.2
+    level_k = main_level_rate - 0.15
+    dk = 100
+    if rank < 10:
+        rank_k = 1.2 - (rank - 1) * 0.05
+    else:
+        rank_k = 0.7
+    spart_k = (race_pace[2] - spart) * 10 / 600 * dk * distance_k
+    no_spart_time = time - spart
+    front_distance = race_distance % 600
+    if front_distance == 0:
+        front_distance = 600
+    if race_distance > 1200:
+        stamina_k = (race_pace[1] - no_spart_time * race_pace[1] / (
+            race_pace[0] + race_pace[1])) * 10 / (race_distance - 600 - front_distance) * dk * distance_k
+    else:
+        stamina_k = 0.0
+    front_k = (race_pace[0] - no_spart_time * race_pace[0] /
+               (race_pace[0] + race_pace[1])) * 10 / front_distance * dk * distance_k
+    div_value = (1.0 - abs(main_distance - race_distance) * 0.0005) * \
+        num_k * (1.0 - (weight - horse_weight) * 0.05)  # * (1.0 - ())
+    time_diff_k = time_diff
+    if time_diff_k > 1.0:
+        time_diff_k = 1.0
+    elif time_diff_k < -1.0:
+        time_diff_k = -1.0
+    if race_distance > 1200:
+        a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
+        b = front_k * 3.5 + stamina_k * 3 + spart_k * 3.5
+        c = (0.5 - time_diff_k) * 10 * distance_k
+        total_k = (100 + a * 10 + b * 2 + c * 2) * div_value
+    else:
+        a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
+        b = front_k * 5 + spart_k * 5
+        c = (0.5 - time_diff_k + (weight - 55) * 2) * 10 * distance_k
+        total_k = (100 + a * 10 + b * 2 + c * 2) * div_value
+    return total_k, front_k, stamina_k, spart_k, div_value
+
+
+def analysis(directoryName, average_pace_info, course, horse_name, link, main_track, num, horse_weight, main_level):
+    print(num, horse_weight, horse_name)
     site = requests.get(link)
     site.encoding = site.apparent_encoding
     data = BeautifulSoup(site.text, 'html.parser')
@@ -414,10 +478,14 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
     start_index = 0
     race_info_list = [[average_pace_info], [
         average_pace_info], [average_pace_info]]
-    speed_k_list = []
-    pace_k_list = []
-    spart_k_list = []
+    high_time_total_k_list = []
+    middle_time_total_k_list = []
+    slow_time_total_k_list = []
+    time_category_list = []
+    div_value_list = []
     front_k_list = []
+    stamina_k_list = []
+    spart_k_list = []
     distance_list = []
     track_list = []
     condition_list = []
@@ -452,7 +520,7 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                 race_name = getTitle(row_element[1])[1]
                 if '障害' in race_name:
                     break
-                level = getLevel(race_name)
+                race_level = getLevel(race_name)
                 race_info['lap'] = getLap(
                     'https://db.netkeiba.com' + getLink(row_element[1])[1])
             # 枠の取得
@@ -477,6 +545,10 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
             # 馬場取得
             if count == 15:
                 condition = row_element[1]
+                if condition == '稍':
+                    condition += '重'
+                if condition == '不':
+                    condition += '良'
             # タイム取得
             if count == 17:
                 time = int(row_element[1][0]) * 60 + float(row_element[1][2:])
@@ -484,9 +556,9 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
             if count == 18:
                 time_diff = float(row_element[1])
             # レースペース取得
-            # if count == 21:
-            #     race_pace_str = row_element[1].split('-')
-            #     race_pace = map(float, race_pace_str)
+            if count == 21:
+                race_pace_str = row_element[1].split('-')
+                race_pace = list(map(float, race_pace_str))
             # 上がりタイム取得
             if count == 22:
                 spart = float(row_element[1])
@@ -495,62 +567,132 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
             if abs(average_pace_info['distance'] - race_info['distance']) <= 400:
                 race_info['label'] = day + ' ' + race_name + \
                     '(' + jockey + ',' + condition + ')' + \
-                    ' ' + rank + '着 ' + track + str(race_info['distance']) + 'm'
+                    ' ' + rank + '着 ' + track + \
+                    str(race_info['distance']) + 'm'
                 if rank == '1' or rank == '2':
                     race_info_list[0].append(race_info)
                 elif rank == '3' or rank == '4' or rank == '5':
                     race_info_list[1].append(race_info)
                 else:
                     race_info_list[2].append(race_info)
-            dir_path = os.path.join(os.path.join('競馬場データ', track), str(race_info['distance']) + course)
-            speed_k, pace_k, spart_k, front_k = getSpeedK(weight, time, time_diff, spart, race_info['distance'], dir_path, course, level)
-            speed_k_list.append(speed_k)
-            pace_k_list.append(pace_k)
-            spart_k_list.append(spart_k)
+            dir_path = os.path.join(os.path.join(
+                '競馬場データ', track), str(race_info['distance']) + course)
+            race_time = time
+            if time_diff > 0:
+                race_time -= time_diff
+            ave_time = getAverageTime(os.path.join(
+                dir_path, condition), race_level)
+            if race_info['distance'] <= 1200:
+                race_pace.insert(1, 0.0)
+            else:
+                race_pace.insert(1, race_time - race_pace[0] - race_pace[1])
+            if race_info['distance'] == 1000:
+                race_pace[0] = race_time - race_pace[2]
+            total_k, front_k, stamina_k, spart_k, div_value = getK(horse_weight, time, time_diff, race_info_list[0][0]['distance'], race_info['distance'],
+                                                                   spart, weight, int(rank), race_pace, main_level, race_level, num, frame, dir_path)
+            if race_time - ave_time < -0.5:
+                high_time_total_k_list.append(total_k)
+                time_category_list.append('H')
+            elif race_time - ave_time < 0.5:
+                middle_time_total_k_list.append(total_k)
+                time_category_list.append('M')
+            else:
+                slow_time_total_k_list.append(total_k)
+                time_category_list.append('S')
             front_k_list.append(front_k)
+            stamina_k_list.append(stamina_k)
+            spart_k_list.append(spart_k)
+            div_value_list.append(div_value)
             condition_list.append(condition)
             distance_list.append(race_info['distance'])
             frame_list.append(frame)
             track_list.append(track)
             rank_list.append(rank)
             weight_list.append(weight)
-    dir_path = os.path.join(os.path.join('競馬場データ', main_track), str(average_pace_info['distance']) + course)
-    frame_k = getFrameK(num, dir_path)
-    father_k = getFatherK(getFather(link), dir_path)
-    filename = [horse_name + '連対.png', horse_name + '掲示板.png', horse_name + '凡走.png']
+    dir_path = os.path.join(os.path.join('競馬場データ', main_track), str(
+        average_pace_info['distance']) + course)
+    frame_pk = getFrameK(num, dir_path)
+    father_pk = getFatherK(getFather(link), dir_path)
+    filename = [horse_name + '連対.png', horse_name +
+                '掲示板.png', horse_name + '凡走.png']
+    saveDirectoryPath = os.path.join(directoryName, horse_name)
+    os.makedirs(saveDirectoryPath, exist_ok=True)
     for i in range(3):
         if race_info_list[i]:
-            saveDirectoryPath = os.path.join(directoryName, horse_name)
-            os.makedirs(saveDirectoryPath, exist_ok=True)
             writeGraph(saveDirectoryPath, average_pace_info['distance'],
                        race_info_list[i], filename[i])
     with open(os.path.join(saveDirectoryPath, horse_name + '指数表.csv'), 'w', newline='', encoding='cp932') as f:
         writer = csv.writer(f)
-        writer.writerow(['スピード指数', 'ペース指数', '上がり指数', '先行指数', '競馬場', '距離', '馬場', '斤量', '枠', '着順'])
-        sum_speed_k = sum_pace_k = sum_spart_k = sum_front_k = sum_div_value = 0.0
-        for i in range(len(speed_k_list)):
-            writer.writerow([speed_k_list[i], pace_k_list[i], spart_k_list[i], front_k_list[i], track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
-            distance_k = 1.0 - abs(average_pace_info['distance'] - distance_list[i]) * 0.01 * 0.05
-            if distance_k < 0:
-                distance_k = 0.0
+        writer.writerow(['トータル指数', 'タイムカテゴリ', '先行指数', 'スタミナ指数', '上がり指数',
+                         '競馬場', '距離', '馬場', '斤量', '枠', '着順'])
+        sum_total_k = sum_front_k = sum_stamina_k = sum_spart_k = sum_div_value = sum_high_total_k = sum_high_div_value = sum_middle_total_k = sum_middle_div_value = sum_slow_total_k = sum_slow_div_value = 0.0
+        high_count = middle_count = slow_count = 0
+        for i in range(len(time_category_list)):
+            time_category = time_category_list.pop()
+            if time_category == 'H':
+                total_k = high_time_total_k_list[high_count]
+                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+                if high_count < 5:
+                    recently_k = 1.25 - 0.05 * high_count
+                else:
+                    recently_k = 1.1 - 0.01 * high_count
+                sum_high_div_value += div_value_list[i] * recently_k
+                sum_high_total_k += total_k * recently_k
+                high_count += 1
+            elif time_category == 'M':
+                total_k = middle_time_total_k_list[middle_count]
+                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+                if middle_count < 5:
+                    recently_k = 1.25 - 0.05 * middle_count
+                else:
+                    recently_k = 1.1 - 0.01 * middle_count
+                sum_middle_div_value += div_value_list[i] * recently_k
+                sum_middle_total_k += total_k * recently_k
+                middle_count += 1
+            else:
+                total_k = slow_time_total_k_list.pop()
+                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+                if slow_count < 5:
+                    recently_k = 1.25 - 0.05 * slow_count
+                else:
+                    recently_k = 1.1 - 0.01 * slow_count
+                sum_slow_div_value += div_value_list[i] * recently_k
+                sum_slow_total_k += total_k * recently_k
+                slow_count += 1
             if i < 5:
                 recently_k = 1.25 - 0.05 * i
             else:
                 recently_k = 1.1 - 0.01 * i
             if recently_k < 0:
                 recently_k = 0.0
-            sum_div_value += distance_k * recently_k
-            sum_speed_k += speed_k_list[i] * distance_k * recently_k
-            sum_pace_k += pace_k_list[i] * distance_k * recently_k
-            sum_spart_k += spart_k_list[i] * distance_k * recently_k
-            sum_front_k += front_k_list[i] * distance_k * recently_k
+            sum_div_value += div_value_list[i] * recently_k
+            sum_total_k += total_k * recently_k
+            sum_front_k += front_k_list[i] * div_value_list[i] * recently_k
+            sum_stamina_k += stamina_k_list[i] * div_value_list[i] * recently_k
+            sum_spart_k += spart_k_list[i] * div_value_list[i] * recently_k
     with open(os.path.join(directoryName, '平均指数表.csv'), 'a', newline='', encoding='cp932') as f:
         writer = csv.writer(f)
         if sum_div_value != 0:
-            ave_speed_k = sum_speed_k / sum_div_value
-            ave_pace_k = sum_pace_k / sum_div_value
-            ave_spart_k = sum_spart_k / sum_div_value
+            ave_total_k = sum_total_k / sum_div_value
             ave_front_k = sum_front_k / sum_div_value
+            ave_stamina_k = sum_stamina_k / sum_div_value
+            ave_spart_k = sum_spart_k / sum_div_value
         else:
-            ave_speed_k = ave_pace_k = ave_spart_k = ave_front_k = 0.0
-        writer.writerow([horse_name, len(speed_k_list), ave_speed_k, ave_pace_k, ave_spart_k, ave_front_k, frame_k[0], father_k[0], frame_k[1], father_k[1], frame_k[2], father_k[2], frame_k[3], father_k[3]])
+            ave_total_k = ave_front_k = ave_stamina_k = ave_spart_k = 0.0
+        if high_count != 0:
+            ave_high_total_k = sum_high_total_k / sum_high_div_value
+        else:
+            ave_high_total_k = 0.0
+        if middle_count != 0:
+            ave_middle_total_k = sum_middle_total_k / sum_middle_div_value
+        else:
+            ave_middle_total_k = 0.0
+        if slow_count != 0:
+            ave_slow_total_k = sum_slow_total_k / sum_slow_div_value
+        else:
+            ave_slow_total_k = 0.0
+        writer.writerow([horse_name, len(front_k_list), ave_total_k, ave_front_k, ave_stamina_k, ave_spart_k, ave_high_total_k, ave_middle_total_k, ave_slow_total_k, frame_pk[0],
+                         father_pk[0], frame_pk[1], father_pk[1], frame_pk[2], father_pk[2], frame_pk[3], father_pk[3]])

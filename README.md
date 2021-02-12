@@ -1,3 +1,11 @@
+# raceanalysis.py
+前提:makecsv.pyでcsvを作っている。
+レース分析.txtに指数分析したいレースのnetkeibaの出馬表のURLを一番上に貼る。(https://race.netkeiba.com/race/shutuba.html?race_id={race_id})
+レース分析.txtが準備できたら以下コマンドで実行する。
+```
+python raceanalysis.py
+```
+
 # lapanalysis.py
 前提:makecsv.pyでcsvを作っている。
 レース分析.txtにラップ分析したいレースのnetkeibaの出馬表のURLを一番上に貼る。(https://race.netkeiba.com/race/shutuba.html?race_id={race_id})
