@@ -423,7 +423,24 @@ def getFatherK(father, dir_path):
     return father_k
 
 
-def getK(horse_weight, time, time_diff, main_distance, race_distance, spart, weight, rank, race_pace, main_level, race_level, num, frame, dir_path):
+def getTrackK(main_track, track):
+    track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
+    mainId = track_list.index(main_track)
+    trackId = track_list.index(track)
+    track_k_list = [[1.00, 0.95, 0.85, 0.25, 0.15, 0.80, 0.30, 0.60, 0.45, 0.85],
+                    [0.95, 1.00, 0.85, 0.25, 0.15, 0.80, 0.30, 0.60, 0.45, 0.85],
+                    [0.85, 0.85, 1.00, 0.35, 0.25, 0.75, 0.30, 0.60, 0.45, 0.85],
+                    [0.25, 0.25, 0.35, 1.00, 0.70, 0.20, 0.65, 0.50, 0.45, 0.30],
+                    [0.15, 0.15, 0.25, 0.70, 1.00, 0.45, 0.80, 0.50, 0.60, 0.25],
+                    [0.80, 0.80, 0.75, 0.20, 0.45, 1.00, 0.40, 0.50, 0.55, 0.75],
+                    [0.30, 0.30, 0.30, 0.65, 0.80, 0.40, 1.00, 0.55, 0.60, 0.30],
+                    [0.60, 0.60, 0.60, 0.50, 0.50, 0.50, 0.55, 1.00, 0.80, 0.60],
+                    [0.45, 0.45, 0.45, 0.45, 0.60, 0.55, 0.60, 0.80, 1.00, 0.45],
+                    [0.85, 0.85, 0.85, 0.30, 0.25, 0.75, 0.30, 0.60, 0.45, 1.00]]
+    return track_k_list[mainId][trackId]
+
+
+def getK(main_track, track, horse_weight, time, time_diff, main_distance, race_distance, spart, weight, rank, race_pace, main_level, race_level, num, frame, dir_path):
     num_k = 1 - abs(num - frame) * 0.05 - int((num - frame) / 3) * 0.05
     base_time = getBaseTime(os.path.join(dir_path, '良'), race_level)[0]
     distance_k = 1 / base_time * 100
@@ -431,32 +448,33 @@ def getK(horse_weight, time, time_diff, main_distance, race_distance, spart, wei
     main_level_rate = 0.7 + main_level * 0.1
     level_k = main_level_rate - 0.15
     dk = 100
+    div_value = (1.0 - abs(main_distance - race_distance) * 0.0005) * \
+        num_k * (1.0 - (weight - horse_weight) * 0.05) * \
+        getTrackK(main_track, track)
     if rank < 10:
         rank_k = 1.2 - (rank - 1) * 0.05
     else:
         rank_k = 0.7
-    spart_k = (race_pace[2] - spart) * 10 / 600 * dk * distance_k
+    spart_k = (race_pace[2] - spart) * 10 / 600 * dk * distance_k * div_value
     no_spart_time = time - spart
     front_distance = race_distance % 600
     if front_distance == 0:
         front_distance = 600
     if race_distance > 1200:
         stamina_k = (race_pace[1] - no_spart_time * race_pace[1] / (
-            race_pace[0] + race_pace[1])) * 10 / (race_distance - 600 - front_distance) * dk * distance_k
+            race_pace[0] + race_pace[1])) * 10 / (race_distance - 600 - front_distance) * dk * distance_k * div_value
     else:
         stamina_k = 0.0
     front_k = (race_pace[0] - no_spart_time * race_pace[0] /
-               (race_pace[0] + race_pace[1])) * 10 / front_distance * dk * distance_k
-    div_value = (1.0 - abs(main_distance - race_distance) * 0.0005) * \
-        num_k * (1.0 - (weight - horse_weight) * 0.05)
+               (race_pace[0] + race_pace[1])) * 10 / front_distance * dk * distance_k * div_value
     time_diff_k = time_diff
     if time_diff_k > 1.0:
         time_diff_k = 1.0
     elif time_diff_k < -1.0:
         time_diff_k = -1.0
     a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
-    b = (0.5 - time_diff_k + (weight - 55) * 2) * 10 * distance_k
-    total_k = (100 + a * 10 + b * 2) * div_value
+    b = (0.5 - time_diff_k) * 10 * distance_k
+    total_k = 100 + a * 10 + b * 2
     return total_k, front_k, stamina_k, spart_k, div_value
 
 
@@ -580,7 +598,7 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                 race_pace.insert(1, race_time - race_pace[0] - race_pace[1])
             if race_info['distance'] == 1000:
                 race_pace[0] = race_time - race_pace[2]
-            total_k, front_k, stamina_k, spart_k, div_value = getK(horse_weight, time, time_diff, race_info_list[0][0]['distance'], race_info['distance'],
+            total_k, front_k, stamina_k, spart_k, div_value = getK(main_track, track, horse_weight, time, time_diff, race_info_list[0][0]['distance'], race_info['distance'],
                                                                    spart, weight, int(rank), race_pace, main_level, race_level, num, frame, dir_path)
             if race_time - ave_time < -0.5:
                 high_time_total_k_list.append(total_k)
@@ -629,8 +647,9 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                     recently_k = 1.25 - 0.05 * high_count
                 else:
                     recently_k = 1.1 - 0.01 * high_count
-                sum_high_div_value += div_value_list[i] * recently_k
-                sum_high_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_high_div_value += div_value
+                sum_high_total_k += total_k * div_value
                 high_count += 1
             elif time_category == 'M':
                 total_k = middle_time_total_k_list[middle_count]
@@ -640,8 +659,9 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                     recently_k = 1.25 - 0.05 * middle_count
                 else:
                     recently_k = 1.1 - 0.01 * middle_count
-                sum_middle_div_value += div_value_list[i] * recently_k
-                sum_middle_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_middle_div_value += div_value
+                sum_middle_total_k += total_k * div_value
                 middle_count += 1
             else:
                 total_k = slow_time_total_k_list.pop()
@@ -651,8 +671,9 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                     recently_k = 1.25 - 0.05 * slow_count
                 else:
                     recently_k = 1.1 - 0.01 * slow_count
-                sum_slow_div_value += div_value_list[i] * recently_k
-                sum_slow_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_slow_div_value += div_value
+                sum_slow_total_k += total_k * div_value
                 slow_count += 1
             if i < 5:
                 recently_k = 1.25 - 0.05 * i
@@ -660,11 +681,12 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                 recently_k = 1.1 - 0.01 * i
             if recently_k < 0:
                 recently_k = 0.0
-            sum_div_value += div_value_list[i] * recently_k
-            sum_total_k += total_k * recently_k
-            sum_front_k += front_k_list[i] * div_value_list[i] * recently_k
-            sum_stamina_k += stamina_k_list[i] * div_value_list[i] * recently_k
-            sum_spart_k += spart_k_list[i] * div_value_list[i] * recently_k
+            div_value = div_value_list[i] * recently_k
+            sum_div_value += div_value
+            sum_total_k += total_k * div_value
+            sum_front_k += front_k_list[i] * div_value
+            sum_stamina_k += stamina_k_list[i] * div_value
+            sum_spart_k += spart_k_list[i] * div_value
     with open(os.path.join(directoryName, '平均指数表.csv'), 'a', newline='', encoding='cp932') as f:
         writer = csv.writer(f)
         if sum_div_value != 0:

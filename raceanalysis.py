@@ -104,7 +104,7 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                 race_pace.insert(1, race_time - race_pace[0] - race_pace[1])
             if race_distance == 1000:
                 race_pace[0] = race_time - race_pace[2]
-            total_k, front_k, stamina_k, spart_k, div_value = getK(horse_weight, time, time_diff, main_distance, race_distance,
+            total_k, front_k, stamina_k, spart_k, div_value = getK(main_track, track, horse_weight, time, time_diff, main_distance, race_distance,
                                                                    spart, weight, int(rank), race_pace, main_level, race_level, num, frame, dir_path)
             if race_time - ave_time < -0.5:
                 high_time_total_k_list.append(total_k)
@@ -147,8 +147,9 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                     recently_k = 1.25 - 0.05 * high_count
                 else:
                     recently_k = 1.1 - 0.01 * high_count
-                sum_high_div_value += div_value_list[i] * recently_k
-                sum_high_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_high_div_value += div_value
+                sum_high_total_k += total_k * div_value
                 high_count += 1
             elif time_category == 'M':
                 total_k = middle_time_total_k_list[middle_count]
@@ -158,8 +159,9 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                     recently_k = 1.25 - 0.05 * middle_count
                 else:
                     recently_k = 1.1 - 0.01 * middle_count
-                sum_middle_div_value += div_value_list[i] * recently_k
-                sum_middle_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_middle_div_value += div_value
+                sum_middle_total_k += total_k * div_value
                 middle_count += 1
             else:
                 total_k = slow_time_total_k_list.pop()
@@ -169,8 +171,9 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                     recently_k = 1.25 - 0.05 * slow_count
                 else:
                     recently_k = 1.1 - 0.01 * slow_count
-                sum_slow_div_value += div_value_list[i] * recently_k
-                sum_slow_total_k += total_k * recently_k
+                div_value = div_value_list[i] * recently_k
+                sum_slow_div_value += div_value
+                sum_slow_total_k += total_k * div_value
                 slow_count += 1
             if i < 5:
                 recently_k = 1.25 - 0.05 * i
@@ -178,11 +181,12 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                 recently_k = 1.1 - 0.01 * i
             if recently_k < 0:
                 recently_k = 0.0
-            sum_div_value += div_value_list[i] * recently_k
-            sum_total_k += total_k * recently_k
-            sum_front_k += front_k_list[i] * div_value_list[i] * recently_k
-            sum_stamina_k += stamina_k_list[i] * div_value_list[i] * recently_k
-            sum_spart_k += spart_k_list[i] * div_value_list[i] * recently_k
+            div_value = div_value_list[i] * recently_k
+            sum_div_value += div_value
+            sum_total_k += total_k * div_value
+            sum_front_k += front_k_list[i] * div_value
+            sum_stamina_k += stamina_k_list[i] * div_value
+            sum_spart_k += spart_k_list[i] * div_value
     with open(os.path.join(directoryName, '平均指数表.csv'), 'a', newline='', encoding='cp932') as f:
         writer = csv.writer(f)
         if sum_div_value != 0:
