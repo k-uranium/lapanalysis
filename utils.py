@@ -429,7 +429,6 @@ def getK(horse_weight, time, time_diff, main_distance, race_distance, spart, wei
     distance_k = 1 / base_time * 100
     race_level_rate = 0.7 + race_level * 0.1
     main_level_rate = 0.7 + main_level * 0.1
-    level_rate = race_level_rate - main_level_rate + 1.2
     level_k = main_level_rate - 0.15
     dk = 100
     if rank < 10:
@@ -449,22 +448,15 @@ def getK(horse_weight, time, time_diff, main_distance, race_distance, spart, wei
     front_k = (race_pace[0] - no_spart_time * race_pace[0] /
                (race_pace[0] + race_pace[1])) * 10 / front_distance * dk * distance_k
     div_value = (1.0 - abs(main_distance - race_distance) * 0.0005) * \
-        num_k * (1.0 - (weight - horse_weight) * 0.05)  # * (1.0 - ())
+        num_k * (1.0 - (weight - horse_weight) * 0.05)
     time_diff_k = time_diff
     if time_diff_k > 1.0:
         time_diff_k = 1.0
     elif time_diff_k < -1.0:
         time_diff_k = -1.0
-    if race_distance > 1200:
-        a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
-        b = front_k * 3.5 + stamina_k * 3 + spart_k * 3.5
-        c = (0.5 - time_diff_k) * 10 * distance_k
-        total_k = (100 + a * 10 + b * 2 + c * 2) * div_value
-    else:
-        a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
-        b = front_k * 5 + spart_k * 5
-        c = (0.5 - time_diff_k + (weight - 55) * 2) * 10 * distance_k
-        total_k = (100 + a * 10 + b * 2 + c * 2) * div_value
+    a = race_level_rate ** 2 * rank_k - level_k ** 2 * 0.9
+    b = (0.5 - time_diff_k + (weight - 55) * 2) * 10 * distance_k
+    total_k = (100 + a * 10 + b * 2) * div_value
     return total_k, front_k, stamina_k, spart_k, div_value
 
 
