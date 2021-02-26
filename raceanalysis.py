@@ -58,7 +58,7 @@ def calc(directoryName, main_distance, course, horse_name, link, main_track, num
                 frame = int(row_element[1])
             # 着順を取得
             if count == 11:
-                rank = row_element[1]
+                rank = row_element[1].split('(')[0]
                 if rank[0] < '0' or rank[0] > '9':
                     break
             # 斤量取得
