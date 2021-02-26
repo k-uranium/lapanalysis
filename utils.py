@@ -332,8 +332,12 @@ def getBaseTime(dir_path, level):
         return time_dictionary_list[3]['avetime'] * 1.01, condition_base_time
     elif time_dictionary_list[4]['count'] != 0:
         return time_dictionary_list[4]['avetime'] * 1.02, condition_base_time
-    else:
+    elif time_dictionary_list[5]['count'] != 0:
         return time_dictionary_list[5]['avetime'] * 1.04, condition_base_time
+    elif time_dictionary_list[0]['count'] != 0:
+        return time_dictionary_list[0]['avetime'] * 0.96, condition_base_time
+    else:
+        return time_dictionary_list[1]['avetime'] * 0.98, condition_base_time
 
 
 def getConditionK(base_time, time, time_diff, distance_k):
