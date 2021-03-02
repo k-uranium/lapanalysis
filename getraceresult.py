@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import os
 import re
 import sys
-from utils import getLink, getRowElement, getSpan, getTable, getTableRow, getTitle, getTimeDictionaryList, getFrameDictionaryList, getFatherDictionaryList, getFather, getLevel
+from utils import getLink, getRowElement, getSpan, getTable, getTableRow, getTimeDictionaryList, getFrameDictionaryList, getFatherDictionaryList, getFather, getLevel
 
 
 # リストの父名の位置を返す
@@ -150,13 +150,16 @@ def getStart(raceId_norace, track):
     return 12
 
 
-if len(sys.argv) != 2:
+if len(sys.argv) == 1:
     print('分析するraceId(race数前まで)をコマンドラインに入力して実行してください。')
     exit()
-if len(sys.argv[1]) != 10:
-    print('形式が違います。')
 os.makedirs('./競馬場データ', exist_ok=True)
-track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
-for track in track_list:
-    os.makedirs('./競馬場データ/' + track, exist_ok=True)
-getStart(sys.argv[1], track_list[int(sys.argv[1][4:6]) - 1])
+for i, raceId in enumerate(sys.argv):
+    if i == 0:
+        continue
+    if len(raceId) != 10:
+        print('形式が違います。')
+    track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
+    for track in track_list:
+        os.makedirs('./競馬場データ/' + track, exist_ok=True)
+    getStart(raceId, track_list[int(raceId[4:6]) - 1])
