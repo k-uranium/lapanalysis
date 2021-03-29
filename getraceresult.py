@@ -159,6 +159,7 @@ for i, raceId in enumerate(sys.argv):
         continue
     if len(raceId) != 10:
         print('形式が違います。')
+        exit()
     track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
     for track in track_list:
         os.makedirs('./競馬場データ/' + track, exist_ok=True)
