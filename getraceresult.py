@@ -151,16 +151,25 @@ def getStart(raceId_norace, track):
 
 
 if len(sys.argv) == 1:
-    print('分析するraceId(race数前まで)をコマンドラインに入力して実行してください。')
+    print('分析するレース開催日を入力してください')
     exit()
 os.makedirs('./競馬場データ', exist_ok=True)
-for i, raceId in enumerate(sys.argv):
+for i, date in enumerate(sys.argv):
     if i == 0:
         continue
-    if len(raceId) != 10:
+    if len(date) != 8:
         print('形式が違います。')
         exit()
+    link = 'https://db.netkeiba.com/race/list/' + date + '/'
+    site = requests.get(link)
+    site.encoding = site.apparent_encoding
+    data = BeautifulSoup(site.text, 'html.parser')
+    a_list = data.find_all('a')
+    race_list = [getLink(a)[1] for a in a_list if '/race/' + date[0:4] in getLink(a)[1]]
+    race_id_list = [race.split('/')[2][0:10] for j, race in enumerate(race_list) if j % 12 == 0]
     track_list = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉']
     for track in track_list:
         os.makedirs('./競馬場データ/' + track, exist_ok=True)
-    getStart(raceId, track_list[int(raceId[4:6]) - 1])
+    for race_id in race_id_list:
+        print(race_id)
+        getStart(race_id, track_list[int(race_id[4:6]) - 1])
