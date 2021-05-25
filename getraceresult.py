@@ -171,5 +171,4 @@ for i, date in enumerate(sys.argv):
     for track in track_list:
         os.makedirs('./競馬場データ/' + track, exist_ok=True)
     for race_id in race_id_list:
-        print(race_id)
         getStart(race_id, track_list[int(race_id[4:6]) - 1])
