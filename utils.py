@@ -526,7 +526,7 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
             if count == 1:
                 tmp_track = getAtag(row_element[1])[1]
                 # 中央開催かどうかチェック
-                if tmp_track[0] < '0' or tmp_track[0] > '9':
+                if tmp_track == '' or tmp_track is None or tmp_track[0] < '0' or tmp_track[0] > '9':
                     break
                 track = re.sub('\d+', '', tmp_track)
             # レース名とラップ取得
@@ -589,44 +589,44 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
                     race_info_list[1].append(race_info)
                 else:
                     race_info_list[2].append(race_info)
-            dir_path = os.path.join(os.path.join(
-                '競馬場データ', track), str(race_info['distance']) + course)
-            race_time = time
-            if time_diff > 0:
-                race_time -= time_diff
-            ave_time = getAverageTime(os.path.join(
-                dir_path, condition), race_level)
-            if race_info['distance'] <= 1200:
-                race_pace.insert(1, 0.0)
-            else:
-                race_pace.insert(1, race_time - race_pace[0] - race_pace[1])
-            if race_info['distance'] == 1000:
-                race_pace[0] = race_time - race_pace[2]
-            total_k, front_k, stamina_k, spart_k, div_value = getK(main_track, track, horse_weight, time, time_diff, race_info_list[0][0]['distance'], race_info['distance'],
-                                                                   spart, weight, int(rank), race_pace, main_level, race_level, num, frame, dir_path)
-            if race_time - ave_time < -0.5:
-                high_time_total_k_list.append(total_k)
-                time_category_list.append('H')
-            elif race_time - ave_time < 0.5:
-                middle_time_total_k_list.append(total_k)
-                time_category_list.append('M')
-            else:
-                slow_time_total_k_list.append(total_k)
-                time_category_list.append('S')
-            front_k_list.append(front_k)
-            stamina_k_list.append(stamina_k)
-            spart_k_list.append(spart_k)
-            div_value_list.append(div_value)
-            condition_list.append(condition)
-            distance_list.append(race_info['distance'])
-            frame_list.append(frame)
-            track_list.append(track)
-            rank_list.append(rank)
-            weight_list.append(weight)
-    dir_path = os.path.join(os.path.join('競馬場データ', main_track), str(
-        average_pace_info['distance']) + course)
-    frame_pk = getFrameK(num, dir_path)
-    father_pk = getFatherK(getFather(link), dir_path)
+            # dir_path = os.path.join(os.path.join(
+            #     '競馬場データ', track), str(race_info['distance']) + course)
+            # race_time = time
+            # if time_diff > 0:
+            #     race_time -= time_diff
+            # ave_time = getAverageTime(os.path.join(
+            #     dir_path, condition), race_level)
+            # if race_info['distance'] <= 1200:
+            #     race_pace.insert(1, 0.0)
+            # else:
+            #     race_pace.insert(1, race_time - race_pace[0] - race_pace[1])
+            # if race_info['distance'] == 1000:
+            #     race_pace[0] = race_time - race_pace[2]
+            # total_k, front_k, stamina_k, spart_k, div_value = getK(main_track, track, horse_weight, time, time_diff, race_info_list[0][0]['distance'], race_info['distance'],
+            #                                                        spart, weight, int(rank), race_pace, main_level, race_level, num, frame, dir_path)
+            # if race_time - ave_time < -0.5:
+            #     high_time_total_k_list.append(total_k)
+            #     time_category_list.append('H')
+            # elif race_time - ave_time < 0.5:
+            #     middle_time_total_k_list.append(total_k)
+            #     time_category_list.append('M')
+            # else:
+            #     slow_time_total_k_list.append(total_k)
+            #     time_category_list.append('S')
+            # front_k_list.append(front_k)
+            # stamina_k_list.append(stamina_k)
+            # spart_k_list.append(spart_k)
+            # div_value_list.append(div_value)
+            # condition_list.append(condition)
+            # distance_list.append(race_info['distance'])
+            # frame_list.append(frame)
+            # track_list.append(track)
+            # rank_list.append(rank)
+            # weight_list.append(weight)
+    # dir_path = os.path.join(os.path.join('競馬場データ', main_track), str(
+    #     average_pace_info['distance']) + course)
+    # frame_pk = getFrameK(num, dir_path)
+    # father_pk = getFatherK(getFather(link), dir_path)
     filename = [horse_name + '連対.png', horse_name +
                 '掲示板.png', horse_name + '凡走.png']
     saveDirectoryPath = os.path.join(directoryName, horse_name)
@@ -635,82 +635,82 @@ def analysis(directoryName, average_pace_info, course, horse_name, link, main_tr
         if race_info_list[i]:
             writeGraph(saveDirectoryPath, average_pace_info['distance'],
                        race_info_list[i], filename[i])
-    with open(os.path.join(saveDirectoryPath, horse_name + '指数表.csv'), 'w', newline='', encoding='cp932') as f:
-        writer = csv.writer(f)
-        writer.writerow(['トータル指数', 'タイムカテゴリ', '先行指数', 'スタミナ指数', '上がり指数',
-                         '競馬場', '距離', '馬場', '斤量', '枠', '着順'])
-        sum_total_k = sum_front_k = sum_stamina_k = sum_spart_k = sum_div_value = sum_high_total_k = sum_high_div_value = sum_middle_total_k = sum_middle_div_value = sum_slow_total_k = sum_slow_div_value = 0.0
-        high_count = middle_count = slow_count = 0
-        for i in range(len(time_category_list)):
-            time_category = time_category_list.pop()
-            if time_category == 'H':
-                total_k = high_time_total_k_list[high_count]
-                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
-                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
-                if high_count < 5:
-                    recently_k = 1.25 - 0.05 * high_count
-                else:
-                    recently_k = 1.1 - 0.01 * high_count
-                div_value = div_value_list[i] * recently_k
-                sum_high_div_value += div_value
-                sum_high_total_k += total_k * div_value
-                high_count += 1
-            elif time_category == 'M':
-                total_k = middle_time_total_k_list[middle_count]
-                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
-                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
-                if middle_count < 5:
-                    recently_k = 1.25 - 0.05 * middle_count
-                else:
-                    recently_k = 1.1 - 0.01 * middle_count
-                div_value = div_value_list[i] * recently_k
-                sum_middle_div_value += div_value
-                sum_middle_total_k += total_k * div_value
-                middle_count += 1
-            else:
-                total_k = slow_time_total_k_list.pop()
-                writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
-                                 track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
-                if slow_count < 5:
-                    recently_k = 1.25 - 0.05 * slow_count
-                else:
-                    recently_k = 1.1 - 0.01 * slow_count
-                div_value = div_value_list[i] * recently_k
-                sum_slow_div_value += div_value
-                sum_slow_total_k += total_k * div_value
-                slow_count += 1
-            if i < 5:
-                recently_k = 1.25 - 0.05 * i
-            else:
-                recently_k = 1.1 - 0.01 * i
-            if recently_k < 0:
-                recently_k = 0.0
-            div_value = div_value_list[i] * recently_k
-            sum_div_value += div_value
-            sum_total_k += total_k * div_value
-            sum_front_k += front_k_list[i] * div_value
-            sum_stamina_k += stamina_k_list[i] * div_value
-            sum_spart_k += spart_k_list[i] * div_value
-    with open(os.path.join(directoryName, '平均指数表.csv'), 'a', newline='', encoding='cp932') as f:
-        writer = csv.writer(f)
-        if sum_div_value != 0:
-            ave_total_k = sum_total_k / sum_div_value
-            ave_front_k = sum_front_k / sum_div_value
-            ave_stamina_k = sum_stamina_k / sum_div_value
-            ave_spart_k = sum_spart_k / sum_div_value
-        else:
-            ave_total_k = ave_front_k = ave_stamina_k = ave_spart_k = 0.0
-        if high_count != 0:
-            ave_high_total_k = sum_high_total_k / sum_high_div_value
-        else:
-            ave_high_total_k = 0.0
-        if middle_count != 0:
-            ave_middle_total_k = sum_middle_total_k / sum_middle_div_value
-        else:
-            ave_middle_total_k = 0.0
-        if slow_count != 0:
-            ave_slow_total_k = sum_slow_total_k / sum_slow_div_value
-        else:
-            ave_slow_total_k = 0.0
-        writer.writerow([horse_name, len(front_k_list), ave_total_k, ave_front_k, ave_stamina_k, ave_spart_k, ave_high_total_k, ave_middle_total_k, ave_slow_total_k, frame_pk[0],
-                         father_pk[0], frame_pk[1], father_pk[1], frame_pk[2], father_pk[2], frame_pk[3], father_pk[3]])
+    # with open(os.path.join(saveDirectoryPath, horse_name + '指数表.csv'), 'w', newline='', encoding='cp932') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(['トータル指数', 'タイムカテゴリ', '先行指数', 'スタミナ指数', '上がり指数',
+    #                      '競馬場', '距離', '馬場', '斤量', '枠', '着順'])
+    #     sum_total_k = sum_front_k = sum_stamina_k = sum_spart_k = sum_div_value = sum_high_total_k = sum_high_div_value = sum_middle_total_k = sum_middle_div_value = sum_slow_total_k = sum_slow_div_value = 0.0
+    #     high_count = middle_count = slow_count = 0
+    #     for i in range(len(time_category_list)):
+    #         time_category = time_category_list.pop()
+    #         if time_category == 'H':
+    #             total_k = high_time_total_k_list[high_count]
+    #             writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+    #                              track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+    #             if high_count < 5:
+    #                 recently_k = 1.25 - 0.05 * high_count
+    #             else:
+    #                 recently_k = 1.1 - 0.01 * high_count
+    #             div_value = div_value_list[i] * recently_k
+    #             sum_high_div_value += div_value
+    #             sum_high_total_k += total_k * div_value
+    #             high_count += 1
+    #         elif time_category == 'M':
+    #             total_k = middle_time_total_k_list[middle_count]
+    #             writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+    #                              track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+    #             if middle_count < 5:
+    #                 recently_k = 1.25 - 0.05 * middle_count
+    #             else:
+    #                 recently_k = 1.1 - 0.01 * middle_count
+    #             div_value = div_value_list[i] * recently_k
+    #             sum_middle_div_value += div_value
+    #             sum_middle_total_k += total_k * div_value
+    #             middle_count += 1
+    #         else:
+    #             total_k = slow_time_total_k_list.pop()
+    #             writer.writerow([total_k, time_category, front_k_list[i], stamina_k_list[i], spart_k_list[i],
+    #                              track_list[i], distance_list[i], condition_list[i], weight_list[i], frame_list[i], rank_list[i]])
+    #             if slow_count < 5:
+    #                 recently_k = 1.25 - 0.05 * slow_count
+    #             else:
+    #                 recently_k = 1.1 - 0.01 * slow_count
+    #             div_value = div_value_list[i] * recently_k
+    #             sum_slow_div_value += div_value
+    #             sum_slow_total_k += total_k * div_value
+    #             slow_count += 1
+    #         if i < 5:
+    #             recently_k = 1.25 - 0.05 * i
+    #         else:
+    #             recently_k = 1.1 - 0.01 * i
+    #         if recently_k < 0:
+    #             recently_k = 0.0
+    #         div_value = div_value_list[i] * recently_k
+    #         sum_div_value += div_value
+    #         sum_total_k += total_k * div_value
+    #         sum_front_k += front_k_list[i] * div_value
+    #         sum_stamina_k += stamina_k_list[i] * div_value
+    #         sum_spart_k += spart_k_list[i] * div_value
+    # with open(os.path.join(directoryName, '平均指数表.csv'), 'a', newline='', encoding='cp932') as f:
+    #     writer = csv.writer(f)
+    #     if sum_div_value != 0:
+    #         ave_total_k = sum_total_k / sum_div_value
+    #         ave_front_k = sum_front_k / sum_div_value
+    #         ave_stamina_k = sum_stamina_k / sum_div_value
+    #         ave_spart_k = sum_spart_k / sum_div_value
+    #     else:
+    #         ave_total_k = ave_front_k = ave_stamina_k = ave_spart_k = 0.0
+    #     if high_count != 0:
+    #         ave_high_total_k = sum_high_total_k / sum_high_div_value
+    #     else:
+    #         ave_high_total_k = 0.0
+    #     if middle_count != 0:
+    #         ave_middle_total_k = sum_middle_total_k / sum_middle_div_value
+    #     else:
+    #         ave_middle_total_k = 0.0
+    #     if slow_count != 0:
+    #         ave_slow_total_k = sum_slow_total_k / sum_slow_div_value
+    #     else:
+    #         ave_slow_total_k = 0.0
+    #     writer.writerow([horse_name, len(front_k_list), ave_total_k, ave_front_k, ave_stamina_k, ave_spart_k, ave_high_total_k, ave_middle_total_k, ave_slow_total_k, frame_pk[0],
+    #                      father_pk[0], frame_pk[1], father_pk[1], frame_pk[2], father_pk[2], frame_pk[3], father_pk[3]])
